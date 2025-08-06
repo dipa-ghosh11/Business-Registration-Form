@@ -1,17 +1,14 @@
 import './App.css';
 import './index.css'
 import React from 'react';
+import { useState } from 'react';
 import { Button, Checkbox, Form, Cascader, Input, Select, Result} from 'antd';
 import {useFormik} from 'formik';
 
 const { Option } = Select;
 
-const onFinish = values => {
-  console.log('Success:', values);
-};
-const onFinishFailed = errorInfo => {
-  console.log('Failed:', errorInfo);
-};
+
+
 
 
 
@@ -59,6 +56,29 @@ const prefixSelector = (
     
 const App = () => {
 
+  const [isSubmit, setIsSubmit] = useState(false);
+
+        const onFinish = values => {
+        console.log('Success:', values);
+              setTimeout(() => {
+                setIsSubmit(true); 
+              }, 1000);
+
+      };
+      const onFinishFailed = errorInfo => {
+        console.log('Failed:', errorInfo);
+      };
+
+      const setValues=(values) => {
+        localStorage.setItem('companyname', values.companyname);
+        localStorage.setItem('url', values.url);
+        localStorage.setItem('firstname', values.firstname);
+        localStorage.setItem('lastname', values.lastname);
+        localStorage.setItem('companymail', values.companymail);
+        localStorage.setItem('jobtitle', values.jobtitle);
+        localStorage.setItem('phone', values.phone);
+      };
+
       const initialValues = {
         companyname: localStorage.getItem('companyname') || '',
         url: localStorage.getItem('url') || '',
@@ -69,22 +89,17 @@ const App = () => {
         phone: localStorage.getItem('phone') || '' ,
       };
    
-      const {handleSubmit}= useFormik({
-        initialValues,
-        onSubmit:(values) => {
-          <Result
-          status="success"
-          title="Successfully Purchased Cloud Server ECS!"/>
-          console.log('Form submitted:', values);
-        },
-
-      });
+      
 
       return(
         <>
-          {/* <Result /> */}
-        
-        <Form   
+        {isSubmit? 
+          (<Result
+            status="success"
+            title="Successfully Submitted Your Business Registration Form!"
+            subTitle="Thank you for registering your business with us. We will get back to you shortly."
+          />) :
+        ( <Form   
           name="basic"
           labelCol={{ span: 8 }} 
           wrapperCol={{ span: 16 }}  
@@ -93,7 +108,8 @@ const App = () => {
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
-          onSubmit={handleSubmit}
+          onChange={setValues}
+          
         >
           <Form.Item
             label="Company Name"
@@ -158,9 +174,13 @@ const App = () => {
             </Button>
           </Form.Item>
         </Form>
-        </>
+      
+        )}
+          
         
-      )
+       
+        </>
+      );
 
 }
 
