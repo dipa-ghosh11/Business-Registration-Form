@@ -3,7 +3,6 @@ import './index.css'
 import React, { use, useEffect } from 'react';
 import { useState } from 'react';
 import { Button, Checkbox, Form, Cascader, Input, Select, Result } from 'antd';
-import { useFormik } from 'formik';
 import axios from 'axios';
 const { Option } = Select;
 
@@ -75,16 +74,6 @@ const App = () => {
   };
 
 
-  const setValues = (e) => {
-    // localStorage.setItem('companyname', e.target.value);
-    // localStorage.setItem('url', e.target.value);
-    // localStorage.setItem('firstname', e.target.value);
-    // localStorage.setItem('lastname', e.target.value);
-    // localStorage.setItem('companymail', e.target.value);
-    // localStorage.setItem('jobtitle', e.target.value);
-    // localStorage.setItem('phone', e.target.value);
-  };
-
   const initialValues = {
     companyname: localStorage.getItem('companyname') || '',
     url: localStorage.getItem('url') || '',
@@ -112,17 +101,17 @@ const App = () => {
   }, [companyData]);
 
   useEffect(() => {
-    axios.post('http://localhost:5000/api/createform', { withCredentials: true})
+    axios.post('http://localhost:5000/api/createform',{}, { withCredentials: true})
       .then((response)=>{
-        // console.log("Response:", response);
+        console.log("Response:", response.data.users);
         console.log("data post successfully");
-        setUsers(response);
+        setUsers(response.data.users);
       })
       .catch((error) => {
         console.error("Error fetching users:", error);
         setUsers([]);
       })
-  }, []);
+  },);
 
 
     
