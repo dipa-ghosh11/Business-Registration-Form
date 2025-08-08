@@ -63,7 +63,7 @@ const App = () => {
 
 
   const onFinish = (values) => {
-    
+    onSubmit(values)
     setTimeout(() => {
       setIsSubmit(true);
     }, 1000);
@@ -94,28 +94,45 @@ const App = () => {
       localStorage.setItem('firstname', companyData.firstname);
       localStorage.setItem('lastname', companyData.lastname);
       localStorage.setItem('jobtitle', companyData.jobtitle);
-      localStorage.setItem('phone', companyData.phone);
+      localStorage.setItem('phone', companyData.phone);   
       // console.log("Data saved to localStorage:", companyData);
     
 
   }, [companyData]);
 
+
+      const onSubmit = (values) => {
+      
+      axios.post('http://localhost:5000/api/createform', values)
+        .then(response => {
+          console.log("Form submitted:", response.data.newUser);
+          setIsSubmit(true);
+        })
+        .catch(error => {
+          console.error("Submit error:", error);
+        });
+
+      // setCompanyData(values); // Save to localStorage
+    };
+
+
   useEffect(() => {
-    axios.post('http://localhost:5000/api/createform',{}, { withCredentials: true})
+    axios.get('http://localhost:5000/api/getusers',{}, { withCredentials: true})
       .then((response)=>{
         console.log("Response:", response.data.users);
-        console.log("data post successfully");
+        
         setUsers(response.data.users);
       })
       .catch((error) => {
         console.error("Error fetching users:", error);
         setUsers([]);
       })
-  },);
+  }, []);
 
 
     
-  console.log("Users:", users);
+
+  // console.log("Users:", users);
   return (
     <>
       {isSubmit ?
@@ -133,6 +150,8 @@ const App = () => {
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
+          
+          
 
 
         >
